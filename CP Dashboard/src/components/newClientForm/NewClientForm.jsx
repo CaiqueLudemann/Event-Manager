@@ -1,11 +1,13 @@
 export function NewClientForm() {
-  const labelStyles = "mr-3";
+  const labelStyles = "block mb-1 text-sm font-medium text-gray-700";
   const inputStyles =
-    " rounded-sm w-200 p-2 border border-gray-300 bg-white checked:border-indigo-600 checked:bg-indigo-600 indeterminate:border-indigo-600 indeterminate:bg-indigo-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:border-gray-300 disabled:bg-gray-100 disabled:checked:bg-gray-100 forced-colors:appearance-auto";
+    "w-full rounded-md p-2 border border-gray-300 bg-white focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500";
+
   return (
-    <>
-      <div className="flex h-auto gap-5 min-w-200 p-6 bg-sky-200 mx-auto flex-col">
-        <div>
+    <div className="mt-6 bg-sky-50 rounded-lg p-2 border border-sky-200">
+      <div className="max-w-3xl mx-auto bg-sky-100 rounded-lg shadow-md p-8 grid grid-cols-2 gap-6">
+        {/* Name */}
+        <div className="col-span-2 sm:col-span-1">
           <label className={labelStyles} htmlFor="name">
             Name
           </label>
@@ -15,9 +17,12 @@ export function NewClientForm() {
             type="text"
             placeholder="John Doe"
           />
+        </div>
 
+        {/* CPF */}
+        <div className="col-span-2 sm:col-span-1">
           <label className={labelStyles} htmlFor="cpf">
-            CPF
+            CPF/CNPJ
           </label>
           <input
             className={inputStyles}
@@ -25,17 +30,18 @@ export function NewClientForm() {
             type="text"
             placeholder="564.234.234-09"
           />
+        </div>
 
+        {/* Date */}
+        <div className="col-span-2 sm:col-span-1">
           <label className={labelStyles} htmlFor="date">
-            Date
+            Date of Birth
           </label>
-          <input
-            className={inputStyles}
-            id="date"
-            type="date"
-            placeholder="mm/dd/yy"
-          />
+          <input className={inputStyles} id="date" type="date" />
+        </div>
 
+        {/* Phone */}
+        <div className="col-span-2 sm:col-span-1">
           <label className={labelStyles} htmlFor="phone">
             Phone Number
           </label>
@@ -43,9 +49,12 @@ export function NewClientForm() {
             className={inputStyles}
             id="phone"
             type="tel"
-            placeholder="(85)986180875"
+            placeholder="(85) 98618-0875"
           />
+        </div>
 
+        {/* Email */}
+        <div className="col-span-2">
           <label className={labelStyles} htmlFor="email">
             Email
           </label>
@@ -57,13 +66,16 @@ export function NewClientForm() {
           />
         </div>
 
-        <button
-          className="bg-sky-500 hover:cursor-pointer hover:bg-sky-700 w-50 rounded-lg px-8 py-4 mx-auto text-white font-extrabold "
-          type="button"
-        >
-          Submit Client
-        </button>
+        {/* Submit Button */}
+        <div className="col-span-2 flex justify-center">
+          <button
+            className="w-1/2 bg-sky-500 hover:bg-sky-600 text-white font-semibold py-3 rounded-lg transition-all"
+            type="button"
+          >
+            Submit Client
+          </button>
+        </div>
       </div>
-    </>
+    </div>
   );
 }

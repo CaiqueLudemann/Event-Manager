@@ -7,5 +7,7 @@ export function EventTypeDropdown() {
     { value: "Party", label: "Party" },
   ];
 
-  return <Select className="col-span-2" options={options} isSearchable />;
+  return (
+    <Select className="min-w-100 col-span-2" options={options} isSearchable />
+  );
 }

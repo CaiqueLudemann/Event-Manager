@@ -5,7 +5,7 @@ export function Header() {
     "bg-white block w-full text-center px-6 py-10 text-xl";
 
   const inactiveNavItemsStyles =
-    "bg-sky-500 block w-full text-center px-6 py-10 text-xl";
+    "bg-slate-800 text-white block w-full text-center px-6 py-10 text-xl";
 
   const navItems = [
     { to: "/new-event", label: "New Event" },
@@ -17,7 +17,7 @@ export function Header() {
     <header className="">
       <ul
         className="
-          bg-sky-500
+            bg-slate-800
             font-bold
             justify-around
             flex
