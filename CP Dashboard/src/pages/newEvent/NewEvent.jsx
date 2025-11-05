@@ -1,13 +1,52 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { UserIdDropdown } from "../../components/userIdDropdown/UserIdDropdown";
 import { EventTypeDropdown } from "../../components/eventTypeDropdown/EventTypeDropdown";
 import { NewClientForm } from "../../components/newClientForm/NewClientForm";
 import { NewEventTypeForm } from "../../components/newEventTypeForm/NewEventTypeForm";
 import { EventDateTime } from "../../components/eventDateTime/EventDateTime";
+import { Bill } from "../../components/bill/Bill";
+import { AdditionalServices } from "../../components/additionalServices/AdditionalServices";
 
 export function NewEvent() {
   const [isAddingClient, setIsAddingClient] = useState(false);
   const [isAddingEventType, setIsAddingEventType] = useState(false);
+
+  // const [serviceCharges, setServiceCharges] = useState(100);
+  const [formData, setFormData] = useState({
+    clientId: "",
+    rentalCharge: 0,
+    serviceCharges: 0,
+    eventType: "",
+    eventDate: "",
+    startTime: "",
+    endTime: "",
+    additionalServices: {
+      barman: { selected: true, price: 100 },
+      waiter: { selected: false, price: 150 },
+      chef: { selected: false, price: 200 },
+      cleaner: { selected: false, price: 100 },
+    },
+    paymentMethod: "",
+  });
+
+  const [newClientFormData, setNewClientFormData] = useState({
+    newClientId: "",
+    newClientName: "",
+    newClientCPF: "",
+    newClientDoB: "",
+    newClientTel: "",
+    newClientEmail: "",
+  });
+
+  useEffect(() => {
+    setNewClientFormData((prevState) => {
+      return {
+        ...prevState,
+        newClientId:
+          newClientFormData.newClientName + newClientFormData.newClientCPF,
+      };
+    });
+  }, [newClientFormData.newClientName, newClientFormData.newClientCPF]);
 
   function toggleIsAddingClient() {
     setIsAddingClient((prev) => !prev);
@@ -16,6 +55,49 @@ export function NewEvent() {
   function toggleIsAddingEventType() {
     setIsAddingEventType((prev) => !prev);
   }
+
+  function updateFormDataWithDropdown(e) {
+    setFormData((prevData) => {
+      return {
+        ...prevData,
+        [e.name]: e.value,
+      };
+    });
+  }
+
+  function updateFormData(e) {
+    setFormData((prevData) => {
+      return {
+        ...prevData,
+        [e.target.name]: e.target.value,
+      };
+    });
+  }
+
+  function updateFormDataWithServices(e) {}
+
+  function submitNewClientForm() {
+    // e.preventDefault();
+
+    // checks if all the key values of the form are filled out
+    // EXCEPT for newClientId, seeing it is automatically filled out AFTER
+    // the user sends his info for the system to create the ID.
+    let isFormComplete = true;
+    for (let item in newClientFormData) {
+      if (!newClientFormData[item]) {
+        if (item !== "newClientId") {
+          isFormComplete = false;
+        }
+      }
+    }
+    if (isFormComplete) {
+      console.log(newClientFormData);
+    } else {
+      alert("You must fill out all fields to create new client.");
+    }
+  }
+
+  // console.log(formData.startTime, formData.endTime);
 
   return (
     <form className="max-w-5xl mx-auto bg-white shadow-md rounded-xl p-10 mt-8 space-y-12">
@@ -39,7 +121,11 @@ export function NewEvent() {
           </label>
 
           <div className="flex flex-wrap items-center gap-4">
-            <UserIdDropdown id="userId" name="userId" />
+            <UserIdDropdown
+              clientId={formData.clientId}
+              setFormData={setFormData}
+              id="userId"
+            />
 
             <button
               type="button"
@@ -54,7 +140,13 @@ export function NewEvent() {
             </button>
           </div>
 
-          {isAddingClient && <NewClientForm />}
+          {isAddingClient && (
+            <NewClientForm
+              submitNewClientForm={submitNewClientForm}
+              newClientFormData={newClientFormData}
+              setNewClientFormData={setNewClientFormData}
+            />
+          )}
         </div>
 
         {/*Event Type + Add Type */}
@@ -67,7 +159,12 @@ export function NewEvent() {
           </label>
 
           <div className="flex flex-wrap items-center gap-4">
-            <EventTypeDropdown id="event-type" name="event-type" />
+            <EventTypeDropdown
+              eventType={formData.eventType}
+              updateFormDataWithDropdown={updateFormDataWithDropdown}
+              id="event-type"
+              name="event-type"
+            />
 
             <button
               type="button"
@@ -86,59 +183,20 @@ export function NewEvent() {
       </div>
 
       <div className="border-t border-gray-200 pt-8 space-y-10">
-        <EventDateTime />
+        <EventDateTime formData={formData} updateFormData={updateFormData} />
       </div>
 
       {/*Adittional Services */}
       <div className="border-t border-gray-200 pt-8 space-y-10">
-        <fieldset className="space-y-6">
-          <legend className="text-base font-semibold text-gray-900">
-            Additional Services
-          </legend>
+        <AdditionalServices />
+      </div>
 
-          {[
-            {
-              id: "barman",
-              label: "Barman",
-              description: "full-time barman fully equipped.",
-            },
-            {
-              id: "waiter",
-              label: "Waiter",
-              description:
-                "No need to be running around, the waiter will attend to the guests.",
-            },
-            {
-              id: "chef",
-              label: "Chef",
-              description: "All the client needs to worry about is enjoying.",
-            },
-            {
-              id: "cleaner",
-              label: "Cleaner",
-              description: "Janitor to keep everythin tidy throughout event.",
-            },
-          ].map(({ id, label, description }) => (
-            <div key={id} className="flex items-start gap-3">
-              <input
-                id={id}
-                name={id}
-                type="checkbox"
-                defaultChecked={id === "barman"}
-                className="mt-1 size-4 border-gray-300 rounded text-sky-600 focus:ring-sky-500"
-              />
-              <div>
-                <label
-                  htmlFor={id}
-                  className="block text-sm font-medium text-gray-900"
-                >
-                  {label}
-                </label>
-                <p className="text-sm text-gray-500">{description}</p>
-              </div>
-            </div>
-          ))}
-        </fieldset>
+      <div className="border-t border-gray-200 pt-8 space-y-10">
+        <Bill
+          serviceCharges={formData.serviceCharges}
+          rentalCharge={formData.rentalCharge}
+          setFormData={setFormData}
+        />
       </div>
 
       {/*Footer Buttons */}
