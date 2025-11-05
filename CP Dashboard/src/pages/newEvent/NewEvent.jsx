@@ -1,17 +1,16 @@
 import { useEffect, useState } from "react";
-import { UserIdDropdown } from "../../components/userIdDropdown/UserIdDropdown";
-import { EventTypeDropdown } from "../../components/eventTypeDropdown/EventTypeDropdown";
-import { NewClientForm } from "../../components/newClientForm/NewClientForm";
-import { NewEventTypeForm } from "../../components/newEventTypeForm/NewEventTypeForm";
-import { EventDateTime } from "../../components/eventDateTime/EventDateTime";
-import { Bill } from "../../components/bill/Bill";
-import { AdditionalServices } from "../../components/additionalServices/AdditionalServices";
+import { UserIdDropdown } from "./newEventComponents/userIdDropdown/UserIdDropdown";
+import { EventTypeDropdown } from "./newEventComponents/eventTypeDropdown/EventTypeDropdown";
+import { NewClientForm } from "./newEventComponents/newClientForm/NewClientForm";
+import { NewEventTypeForm } from "./newEventComponents/newEventTypeForm/NewEventTypeForm";
+import { EventDateTime } from "./newEventComponents/eventDateTime/EventDateTime";
+import { Bill } from "./newEventComponents/bill/Bill";
+import { AdditionalServices } from "./newEventComponents/additionalServices/AdditionalServices";
 
 export function NewEvent() {
   const [isAddingClient, setIsAddingClient] = useState(false);
   const [isAddingEventType, setIsAddingEventType] = useState(false);
 
-  // const [serviceCharges, setServiceCharges] = useState(100);
   const [formData, setFormData] = useState({
     clientId: "",
     rentalCharge: 0,
