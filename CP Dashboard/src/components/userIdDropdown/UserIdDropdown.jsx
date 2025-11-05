@@ -19,7 +19,7 @@ export function UserIdDropdown({ setFormData, clientId }) {
   const currentValue = options.find((option) => {
     return option.value === clientId;
   });
-  console.log(clientId);
+
   return (
     <Select
       onChange={updateUserId}

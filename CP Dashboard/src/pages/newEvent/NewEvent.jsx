@@ -21,7 +21,7 @@ export function NewEvent() {
     startTime: "",
     endTime: "",
     additionalServices: {
-      barman: { selected: true, price: 100 },
+      barman: { selected: false, price: 100 },
       waiter: { selected: false, price: 150 },
       chef: { selected: false, price: 200 },
       cleaner: { selected: false, price: 100 },
@@ -39,13 +39,15 @@ export function NewEvent() {
   });
 
   useEffect(() => {
-    setNewClientFormData((prevState) => {
-      return {
-        ...prevState,
-        newClientId:
-          newClientFormData.newClientName + newClientFormData.newClientCPF,
-      };
-    });
+    if (isAddingClient) {
+      setNewClientFormData((prevState) => {
+        return {
+          ...prevState,
+          newClientId:
+            newClientFormData.newClientName + newClientFormData.newClientCPF,
+        };
+      });
+    }
   }, [newClientFormData.newClientName, newClientFormData.newClientCPF]);
 
   function toggleIsAddingClient() {
@@ -74,7 +76,27 @@ export function NewEvent() {
     });
   }
 
-  function updateFormDataWithServices(e) {}
+  function updateFormDataWithServices(id, price) {
+    setFormData((prevData) => {
+      const updatedServices = {
+        ...prevData.additionalServices,
+        [id]: {
+          selected: !prevData.additionalServices[id].selected,
+          price: Number(price),
+        },
+      };
+
+      const totalServiceCharge = Object.values(updatedServices)
+        .filter((s) => s.selected)
+        .reduce((sum, s) => sum + s.price, 0);
+
+      return {
+        ...prevData,
+        additionalServices: updatedServices,
+        serviceCharges: totalServiceCharge,
+      };
+    });
+  }
 
   function submitNewClientForm() {
     // e.preventDefault();
@@ -97,7 +119,13 @@ export function NewEvent() {
     }
   }
 
-  // console.log(formData.startTime, formData.endTime);
+  function submitNewEventForm() {
+    if (!isAddingClient) {
+      console.log(formData);
+      return;
+    }
+    alert("Either submit or cancel new client registration.");
+  }
 
   return (
     <form className="max-w-5xl mx-auto bg-white shadow-md rounded-xl p-10 mt-8 space-y-12">
@@ -188,11 +216,14 @@ export function NewEvent() {
 
       {/*Adittional Services */}
       <div className="border-t border-gray-200 pt-8 space-y-10">
-        <AdditionalServices />
+        <AdditionalServices
+          updateFormDataWithServices={updateFormDataWithServices}
+        />
       </div>
 
       <div className="border-t border-gray-200 pt-8 space-y-10">
         <Bill
+          paymentMethod={formData.paymentMethod}
           serviceCharges={formData.serviceCharges}
           rentalCharge={formData.rentalCharge}
           setFormData={setFormData}
@@ -208,7 +239,8 @@ export function NewEvent() {
           Cancel
         </button>
         <button
-          type="submit"
+          onClick={submitNewEventForm}
+          type="button"
           className="bg-sky-600 text-white font-semibold px-6 py-2 rounded-lg hover:bg-sky-700 shadow-sm transition-colors"
         >
           Save Event
