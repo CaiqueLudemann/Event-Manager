@@ -1,14 +1,29 @@
 import Select from "react-select";
 
-export function EventTypeDropdown({ updateEventType, eventType }) {
-  const options = [
-    { value: "Birthday", label: "Birthday" },
-    { value: "Corporate Reunion", label: "Corporate Reunion" },
-    { value: "Party", label: "Party" },
-  ];
+export function EventTypeDropdown({
+  eventTypeList,
+  updateEventType,
+  eventType,
+}) {
+  if (!eventTypeList) return null;
+  const options = eventTypeList.map((event) => {
+    const [key, value] = Object.entries(event)[0];
+    return {
+      value: key,
+      label: value,
+    };
+  });
+
+  // const options = [
+  //   { value: "Birthday", label: "Birthday" },
+  //   { value: "Corporate Reunion", label: "Corporate Reunion" },
+  //   { value: "Party", label: "Party" },
+  // ];
 
   const currentValue =
-    options.find((option) => option.value === eventType) || null;
+    options.find(
+      (option) => option.value === eventType.replace(/ /g, "").toLowerCase()
+    ) || null;
 
   return (
     <Select

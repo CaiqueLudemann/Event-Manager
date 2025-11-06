@@ -13,7 +13,11 @@ export function NewEvent() {
   const [isAddingClient, setIsAddingClient] = useState(false);
   // this state is only to run useState to fetch updated client list upon submission of new client form
   const [refreshClientListTrigger, setRefreshClientListTrigger] = useState(0);
+  const [refreshEventTypeListTrigger, setRefreshEventTypeListTrigger] =
+    useState(0);
   const [isAddingEventType, setIsAddingEventType] = useState(false);
+  const [newEventType, setNewEventType] = useState("");
+  const [eventTypeList, setEventTypeList] = useState([]);
   const [clientList, setClientList] = useState(null);
 
   // server-oriented functions:
@@ -21,6 +25,11 @@ export function NewEvent() {
     // I added a url proxy to package.json
     const response = await axios.get("http://localhost:8000/client-list");
     setClientList(response.data);
+  }
+
+  async function getEventTypesList() {
+    const response = await axios.get("http://localhost:8000/event-types");
+    setEventTypeList(response.data);
   }
 
   const [formData, setFormData] = useState({
@@ -52,7 +61,8 @@ export function NewEvent() {
 
   useEffect(() => {
     getClientList();
-  }, [refreshClientListTrigger]);
+    getEventTypesList();
+  }, [refreshClientListTrigger, refreshEventTypeListTrigger]);
 
   // useEffect(() => {
   //   if (isAddingClient) {
@@ -137,8 +147,9 @@ export function NewEvent() {
         clientTel: newClientFormData.newClientTel,
         clientEmail: newClientFormData.newClientEmail,
       });
-
       setRefreshClientListTrigger((n) => n + 1);
+      toggleIsAddingClient();
+
       // console.log(newClientFormData);
       // post with axios to add to dbClientList in backend
     } else {
@@ -146,9 +157,27 @@ export function NewEvent() {
     }
   }
 
+  async function updateNewEventType(e) {
+    setNewEventType(e.target.value);
+  }
+
+  async function submitNewEventType() {
+    if (newEventType) {
+      console.log(newEventType);
+      await axios.post("http://localhost:8000/new-event-type", {
+        [newEventType.replace(/ /g, "").toLowerCase()]: newEventType,
+      });
+      setRefreshEventTypeListTrigger((n) => n + 1);
+      toggleIsAddingEventType();
+      return;
+    } else {
+      alert("Must fill out event type before submitting.");
+    }
+  }
+
   function submitNewEventForm() {
     if (!isAddingClient) {
-      // console.log(formData);
+      console.log(formData);
       return;
     }
     alert("Either submit or cancel new client registration.");
@@ -218,6 +247,7 @@ export function NewEvent() {
 
           <div className="flex flex-wrap items-center gap-4">
             <EventTypeDropdown
+              eventTypeList={eventTypeList}
               eventType={formData.eventType}
               updateEventType={updateEventType}
               id="event-type"
@@ -237,7 +267,13 @@ export function NewEvent() {
             </button>
           </div>
         </div>
-        {isAddingEventType && <NewEventTypeForm />}
+        {isAddingEventType && (
+          <NewEventTypeForm
+            submitNewEventType={submitNewEventType}
+            newEventType={newEventType}
+            updateNewEventType={updateNewEventType}
+          />
+        )}
       </div>
 
       <div className="border-t border-gray-200 pt-8 space-y-10">

@@ -14,7 +14,7 @@ export function NewClientForm({
   }
 
   return (
-    <form className="mt-6 bg-sky-50 rounded-lg p-2 border border-sky-200">
+    <div className="mt-6 bg-sky-50 rounded-lg p-2 border border-sky-200">
       <h2 className="pl-8 pb-4 text-center font-semibold ">
         Create New Client
       </h2>
@@ -131,6 +131,6 @@ export function NewClientForm({
           </button>
         </div>
       </div>
-    </form>
+    </div>
   );
 }
