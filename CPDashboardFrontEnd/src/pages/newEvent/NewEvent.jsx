@@ -11,6 +11,7 @@ import axios from "axios";
 
 export function NewEvent() {
   const [isAddingClient, setIsAddingClient] = useState(false);
+  const [isNewClientCreated, setIsNewClientCreated] = useState(false);
   const [isAddingEventType, setIsAddingEventType] = useState(false);
   const [clientList, setClientList] = useState(null);
 
@@ -50,7 +51,7 @@ export function NewEvent() {
 
   useEffect(() => {
     getClientList();
-  }, []);
+  }, [isNewClientCreated]);
 
   // useEffect(() => {
   //   if (isAddingClient) {
@@ -112,8 +113,8 @@ export function NewEvent() {
     });
   }
 
-  async function submitNewClientForm() {
-    // e.preventDefault();
+  async function submitNewClientForm(e) {
+    e.preventDefault();
 
     // checks if all the key values of the form are filled out
     // EXCEPT for newClientId, seeing it is automatically filled out AFTER
@@ -128,13 +129,15 @@ export function NewEvent() {
     }
     if (isFormComplete) {
       await axios.post("http://localhost:8000/new-client", {
-        clientId: newClientFormData.newClientId,
+        // server is adding clientId
         clientName: newClientFormData.newClientName,
         clientCPF: newClientFormData.newClientCPF,
         clientDoB: newClientFormData.newClientDoB,
         clientTel: newClientFormData.newClientTel,
         clientEmail: newClientFormData.newClientEmail,
       });
+
+      setIsNewClientCreated((prevVal) => !prevVal);
       // console.log(newClientFormData);
       // post with axios to add to dbClientList in backend
     } else {

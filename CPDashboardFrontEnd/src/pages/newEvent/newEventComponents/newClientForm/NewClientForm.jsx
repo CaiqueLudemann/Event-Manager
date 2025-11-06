@@ -8,13 +8,13 @@ export function NewClientForm({
       return {
         ...prevState,
         [event.target.name]: event.target.value,
-        newClientId: prevState.newClientName + prevState.newClientCPF,
+        // newClientId: prevState.newClientName + prevState.newClientCPF,
       };
     });
   }
 
   return (
-    <div className="mt-6 bg-sky-50 rounded-lg p-2 border border-sky-200">
+    <form className="mt-6 bg-sky-50 rounded-lg p-2 border border-sky-200">
       <h2 className="pl-8 pb-4 text-center font-semibold ">
         Create New Client
       </h2>
@@ -32,6 +32,7 @@ export function NewClientForm({
             className="w-full rounded-md p-2 border border-gray-300 bg-white focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500"
             id="name"
             name="newClientName"
+            pattern="^[A-Za-zÀ-ÖØ-öø-ÿ\s']+$"
             type="text"
             value={newClientFormData.newClientName}
             onChange={updateNewClientFormData}
@@ -122,14 +123,14 @@ export function NewClientForm({
         {/* Submit Button */}
         <div className="col-span-2 flex justify-center">
           <button
-            onClick={submitNewClientForm}
+            onClick={(e) => submitNewClientForm(e)}
             className="w-1/2 bg-sky-500 hover:bg-sky-600 text-white font-semibold py-3 rounded-lg transition-all"
-            type="button"
+            type="submit"
           >
             Submit Client
           </button>
         </div>
       </div>
-    </div>
+    </form>
   );
 }
