@@ -1,6 +1,6 @@
 import Select from "react-select";
 
-export function EventTypeDropdown({ updateFormDataWithDropdown, eventType }) {
+export function EventTypeDropdown({ updateEventType, eventType }) {
   const options = [
     { value: "Birthday", label: "Birthday" },
     { value: "Corporate Reunion", label: "Corporate Reunion" },
@@ -14,7 +14,7 @@ export function EventTypeDropdown({ updateFormDataWithDropdown, eventType }) {
     <Select
       value={currentValue}
       onChange={(option) =>
-        updateFormDataWithDropdown({
+        updateEventType({
           name: "eventType",
           value: option ? option.value : "",
         })

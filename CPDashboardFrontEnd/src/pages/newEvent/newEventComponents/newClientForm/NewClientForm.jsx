@@ -8,6 +8,7 @@ export function NewClientForm({
       return {
         ...prevState,
         [event.target.name]: event.target.value,
+        newClientId: prevState.newClientName + prevState.newClientCPF,
       };
     });
   }

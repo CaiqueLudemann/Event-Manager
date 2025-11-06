@@ -21,10 +21,6 @@ export function NewEvent() {
     setClientList(response.data);
   }
 
-  useEffect(() => {
-    getClientList();
-  }, []);
-
   const [formData, setFormData] = useState({
     clientId: "",
     rentalCharge: 0,
@@ -44,25 +40,29 @@ export function NewEvent() {
   });
 
   const [newClientFormData, setNewClientFormData] = useState({
-    newClientId: "",
     newClientName: "",
     newClientCPF: "",
+    newClientId: "",
     newClientDoB: "",
     newClientTel: "",
     newClientEmail: "",
   });
 
   useEffect(() => {
-    if (isAddingClient) {
-      setNewClientFormData((prevState) => {
-        return {
-          ...prevState,
-          newClientId:
-            newClientFormData.newClientName + newClientFormData.newClientCPF,
-        };
-      });
-    }
-  }, [newClientFormData.newClientName, newClientFormData.newClientCPF]);
+    getClientList();
+  }, []);
+
+  // useEffect(() => {
+  //   if (isAddingClient) {
+  //     setNewClientFormData((prevState) => {
+  //       return {
+  //         ...prevState,
+  //         newClientId:
+  //           newClientFormData.newClientName + newClientFormData.newClientCPF,
+  //       };
+  //     });
+  //   }
+  // }, [newClientFormData.newClientName, newClientFormData.newClientCPF]);
 
   function toggleIsAddingClient() {
     setIsAddingClient((prev) => !prev);
@@ -72,7 +72,7 @@ export function NewEvent() {
     setIsAddingEventType((prev) => !prev);
   }
 
-  function updateFormDataWithDropdown(e) {
+  function updateEventType(e) {
     setFormData((prevData) => {
       return {
         ...prevData,
@@ -112,7 +112,7 @@ export function NewEvent() {
     });
   }
 
-  function submitNewClientForm() {
+  async function submitNewClientForm() {
     // e.preventDefault();
 
     // checks if all the key values of the form are filled out
@@ -127,7 +127,16 @@ export function NewEvent() {
       }
     }
     if (isFormComplete) {
+      await axios.post("http://localhost:8000/new-client", {
+        clientId: newClientFormData.newClientId,
+        clientName: newClientFormData.newClientName,
+        clientCPF: newClientFormData.newClientCPF,
+        clientDoB: newClientFormData.newClientDoB,
+        clientTel: newClientFormData.newClientTel,
+        clientEmail: newClientFormData.newClientEmail,
+      });
       // console.log(newClientFormData);
+      // post with axios to add to dbClientList in backend
     } else {
       alert("You must fill out all fields to create new client.");
     }
@@ -141,7 +150,7 @@ export function NewEvent() {
     alert("Either submit or cancel new client registration.");
   }
 
-  // console.log(formData);
+  // console.log("test");
 
   return (
     <form className="max-w-5xl mx-auto bg-white shadow-md rounded-xl p-10 mt-8 space-y-12">
@@ -206,7 +215,7 @@ export function NewEvent() {
           <div className="flex flex-wrap items-center gap-4">
             <EventTypeDropdown
               eventType={formData.eventType}
-              updateFormDataWithDropdown={updateFormDataWithDropdown}
+              updateEventType={updateEventType}
               id="event-type"
               name="event-type"
             />
