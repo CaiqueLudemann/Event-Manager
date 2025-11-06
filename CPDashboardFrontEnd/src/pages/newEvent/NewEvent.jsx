@@ -11,7 +11,8 @@ import axios from "axios";
 
 export function NewEvent() {
   const [isAddingClient, setIsAddingClient] = useState(false);
-  const [isNewClientCreated, setIsNewClientCreated] = useState(false);
+  // this state is only to run useState to fetch updated client list upon submission of new client form
+  const [refreshClientListTrigger, setRefreshClientListTrigger] = useState(0);
   const [isAddingEventType, setIsAddingEventType] = useState(false);
   const [clientList, setClientList] = useState(null);
 
@@ -51,7 +52,7 @@ export function NewEvent() {
 
   useEffect(() => {
     getClientList();
-  }, [isNewClientCreated]);
+  }, [refreshClientListTrigger]);
 
   // useEffect(() => {
   //   if (isAddingClient) {
@@ -137,7 +138,7 @@ export function NewEvent() {
         clientEmail: newClientFormData.newClientEmail,
       });
 
-      setIsNewClientCreated((prevVal) => !prevVal);
+      setRefreshClientListTrigger((n) => n + 1);
       // console.log(newClientFormData);
       // post with axios to add to dbClientList in backend
     } else {
