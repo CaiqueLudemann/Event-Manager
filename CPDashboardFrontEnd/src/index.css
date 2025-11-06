@@ -1,0 +1,11 @@
+@import "tailwindcss";
+
+/* custom tailwind class-styles syntax: */
+/* @theme {
+  --text-huge: 30rem;
+  --text-huge--text-primary-100: rgba(125, 0, 125);
+} */
+
+body {
+  height: 1000px;
+}
