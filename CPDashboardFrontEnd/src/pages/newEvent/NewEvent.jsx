@@ -175,10 +175,46 @@ export function NewEvent() {
     }
   }
 
-  function submitNewEventForm() {
-    if (!isAddingClient) {
-      console.log(formData);
+  async function submitNewEventForm() {
+    if (isAddingClient || isAddingEventType) {
+      console.log("Either submit or cancel new client/event-type creation.");
       return;
+    }
+
+    if (!formData.clientId) {
+      alert("Select a client");
+      return;
+    }
+
+    try {
+      //the response will send the data and the backend returns the data to make sure we got it there.
+      const response = await axios.post(
+        "http://localhost:8000/client-list/new-event",
+        formData
+      );
+      console.log("Event saved:", response.data);
+      alert("Event saved successfully");
+
+      setFormData({
+        clientId: "",
+        rentalCharge: 0,
+        serviceCharges: 0,
+        eventType: "",
+        eventDate: "",
+        startTime: "",
+        endTime: "",
+        additionalServices: {
+          barman: { selected: false, price: 100 },
+          waiter: { selected: false, price: 150 },
+          chef: { selected: false, price: 200 },
+          cleaner: { selected: false, price: 100 },
+        },
+        paymentMethod: "",
+        isDone: false,
+      });
+    } catch (error) {
+      console.error("Error saving event:", error);
+      alert("Failed to save event.");
     }
     alert("Either submit or cancel new client registration.");
   }
