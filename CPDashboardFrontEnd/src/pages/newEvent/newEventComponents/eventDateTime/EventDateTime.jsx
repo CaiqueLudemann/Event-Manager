@@ -1,4 +1,4 @@
-export function EventDateTime({ formData, updateFormData }) {
+export function EventDateTime({ formData, updateDateTime }) {
   return (
     <>
       <section className="flex flex-col items-start min-h-50 justify-around gap-y-5">
@@ -12,7 +12,7 @@ export function EventDateTime({ formData, updateFormData }) {
             id="event-date"
             name="eventDate"
             value={formData.eventDate}
-            onChange={updateFormData}
+            onChange={updateDateTime}
             type="date"
           />
         </div>
@@ -26,7 +26,7 @@ export function EventDateTime({ formData, updateFormData }) {
             type="time"
             name="startTime"
             value={formData.startTime}
-            onChange={updateFormData}
+            onChange={updateDateTime}
           />
         </div>
         <div className="flex gap-10">
@@ -39,7 +39,7 @@ export function EventDateTime({ formData, updateFormData }) {
             type="time"
             name="endTime"
             value={formData.endTime}
-            onChange={updateFormData}
+            onChange={updateDateTime}
           />
         </div>
       </section>

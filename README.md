@@ -18,12 +18,12 @@ A full-stack event management system built with **React (Vite)** on the frontend
 
 ```bash
 # in one terminal
-cd backend
+cd CPDashboardBackEnd
 npm install
-npm run dev
+npm run start
 
 # in another terminal
-cd frontend
+cd CPDashboardFrontEnd
 npm install
 npm run dev
 ```

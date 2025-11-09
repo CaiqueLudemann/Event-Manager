@@ -7,31 +7,20 @@ import { EventDateTime } from "./newEventComponents/eventDateTime/EventDateTime"
 import { Bill } from "./newEventComponents/bill/Bill";
 import { AdditionalServices } from "./newEventComponents/additionalServices/AdditionalServices";
 import axios from "axios";
-// import crypto from "crypto"
 
 export function NewEvent() {
+  const [eventTypeList, setEventTypeList] = useState([]);
+  const [clientList, setClientList] = useState([]);
+
   const [isAddingClient, setIsAddingClient] = useState(false);
-  // this state is only to run useState to fetch updated client list upon submission of new client form
+  const [isAddingEventType, setIsAddingEventType] = useState(false);
+
   const [refreshClientListTrigger, setRefreshClientListTrigger] = useState(0);
   const [refreshEventTypeListTrigger, setRefreshEventTypeListTrigger] =
     useState(0);
-  const [isAddingEventType, setIsAddingEventType] = useState(false);
   const [newEventType, setNewEventType] = useState("");
-  const [eventTypeList, setEventTypeList] = useState([]);
-  const [clientList, setClientList] = useState(null);
 
-  // server-oriented functions:
-  async function getClientList() {
-    // I added a url proxy to package.json
-    const response = await axios.get("http://localhost:8000/client-list");
-    setClientList(response.data);
-  }
-
-  async function getEventTypesList() {
-    const response = await axios.get("http://localhost:8000/event-types");
-    setEventTypeList(response.data);
-  }
-
+  // submission-form data
   const [formData, setFormData] = useState({
     clientId: "",
     rentalCharge: 0,
@@ -50,6 +39,7 @@ export function NewEvent() {
     isDone: false,
   });
 
+  // data from NewClientForm
   const [newClientFormData, setNewClientFormData] = useState({
     newClientName: "",
     newClientCPF: "",
@@ -59,31 +49,36 @@ export function NewEvent() {
     newClientEmail: "",
   });
 
+  //server: populate UserIdDropdown
+  async function getClientList() {
+    // I added a url proxy to package.json
+    const response = await axios.get("http://localhost:8000/client-list");
+    setClientList(response.data);
+  }
+
+  //server: populate EventTypeDropdown
+  async function getEventTypesList() {
+    const response = await axios.get("http://localhost:8000/event-types");
+    setEventTypeList(response.data);
+  }
+
+  // keeps UserIdDropdown & EventTypeDropdown updated
   useEffect(() => {
     getClientList();
     getEventTypesList();
   }, [refreshClientListTrigger, refreshEventTypeListTrigger]);
 
-  // useEffect(() => {
-  //   if (isAddingClient) {
-  //     setNewClientFormData((prevState) => {
-  //       return {
-  //         ...prevState,
-  //         newClientId:
-  //           newClientFormData.newClientName + newClientFormData.newClientCPF,
-  //       };
-  //     });
-  //   }
-  // }, [newClientFormData.newClientName, newClientFormData.newClientCPF]);
-
+  // hide/show NewClientForm
   function toggleIsAddingClient() {
     setIsAddingClient((prev) => !prev);
   }
 
+  // hide/show NewEventTypeForm
   function toggleIsAddingEventType() {
     setIsAddingEventType((prev) => !prev);
   }
 
+  // updates submission-form with data from EventTypeDropdown
   function updateEventType(e) {
     setFormData((prevData) => {
       return {
@@ -93,7 +88,8 @@ export function NewEvent() {
     });
   }
 
-  function updateFormData(e) {
+  //updates submission-form with data from EventDateTime
+  function updateDateTime(e) {
     setFormData((prevData) => {
       return {
         ...prevData,
@@ -102,7 +98,8 @@ export function NewEvent() {
     });
   }
 
-  function updateFormDataWithServices(id, price) {
+  // updates submission-form with data from AdditionalServices
+  function updateServices(id, price) {
     setFormData((prevData) => {
       const updatedServices = {
         ...prevData.additionalServices,
@@ -124,12 +121,16 @@ export function NewEvent() {
     });
   }
 
+  // updates controlled input for new event type
+  async function updateNewEventType(e) {
+    setNewEventType(e.target.value);
+  }
+
+  //server: creates new client
   async function submitNewClientForm(e) {
     e.preventDefault();
 
-    // checks if all the key values of the form are filled out
-    // EXCEPT for newClientId, seeing it is automatically filled out AFTER
-    // the user sends his info for the system to create the ID.
+    // checks if all fields are filled
     let isFormComplete = true;
     for (let item in newClientFormData) {
       if (!newClientFormData[item]) {
@@ -138,6 +139,7 @@ export function NewEvent() {
         }
       }
     }
+    // if fields are filled, sends new event to server
     if (isFormComplete) {
       await axios.post("http://localhost:8000/new-client", {
         // server is adding clientId
@@ -157,10 +159,7 @@ export function NewEvent() {
     }
   }
 
-  async function updateNewEventType(e) {
-    setNewEventType(e.target.value);
-  }
-
+  // server: creates new event type
   async function submitNewEventType() {
     if (newEventType) {
       console.log(newEventType);
@@ -216,7 +215,7 @@ export function NewEvent() {
       console.error("Error saving event:", error);
       alert("Failed to save event.");
     }
-    alert("Either submit or cancel new client registration.");
+    // alert("Either submit or cancel new client registration.");
   }
 
   // console.log("test");
@@ -313,13 +312,14 @@ export function NewEvent() {
       </div>
 
       <div className="border-t border-gray-200 pt-8 space-y-10">
-        <EventDateTime formData={formData} updateFormData={updateFormData} />
+        <EventDateTime formData={formData} updateDateTime={updateDateTime} />
       </div>
 
       {/*Adittional Services */}
       <div className="border-t border-gray-200 pt-8 space-y-10">
         <AdditionalServices
-          updateFormDataWithServices={updateFormDataWithServices}
+          servicesState={formData.additionalServices}
+          updateServices={updateServices}
         />
       </div>
 
